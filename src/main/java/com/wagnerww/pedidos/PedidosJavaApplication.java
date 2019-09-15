@@ -1,5 +1,6 @@
 package com.wagnerww.pedidos;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -9,8 +10,17 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.wagnerww.pedidos.domain.Categoria;
+import com.wagnerww.pedidos.domain.Cidade;
+import com.wagnerww.pedidos.domain.Cliente;
+import com.wagnerww.pedidos.domain.Endereco;
+import com.wagnerww.pedidos.domain.Estado;
 import com.wagnerww.pedidos.domain.Produto;
+import com.wagnerww.pedidos.domain.enums.TipoCliente;
 import com.wagnerww.pedidos.repositories.CategoriaRepository;
+import com.wagnerww.pedidos.repositories.CidadeRepository;
+import com.wagnerww.pedidos.repositories.ClienteRepository;
+import com.wagnerww.pedidos.repositories.EnderecoRepository;
+import com.wagnerww.pedidos.repositories.EstadoRepository;
 import com.wagnerww.pedidos.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -21,6 +31,18 @@ public class PedidosJavaApplication implements CommandLineRunner {
 	
 	@Autowired
 	private ProdutoRepository produtoRepository;
+	
+	@Autowired
+	private CidadeRepository cidadeRepository;
+	
+	@Autowired
+	private EstadoRepository estadoRepository;
+	
+	@Autowired
+	private ClienteRepository clienteRepository;
+	
+	@Autowired
+	private EnderecoRepository enderecoRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(PedidosJavaApplication.class, args);
@@ -45,6 +67,30 @@ public class PedidosJavaApplication implements CommandLineRunner {
 		categoriaRepository.saveAll(Arrays.asList(cat1, cat2));
 		produtoRepository.saveAll(Arrays.asList(p1, p2, p3));
 		
+		Estado est1 = new Estado(null, "Minas Gerais");
+		Estado est2 = new Estado(null, "São Paulo");
+		
+		Cidade c1 = new Cidade(null, "Uberlândia", est1);
+		Cidade c2 = new Cidade(null, "São Paulo", est2);
+		Cidade c3 = new Cidade(null, "Campinas", est2);
+		
+		est1.getCidades().addAll(Arrays.asList(c1));
+		est2.getCidades().addAll(Arrays.asList(c2, c3));
+		
+		estadoRepository.saveAll(Arrays.asList(est1, est2));
+		cidadeRepository.saveAll(Arrays.asList(c1,c2,c3));
+		
+		
+		Cliente cli1 = new Cliente(null, "Maria Silva", "maria@gmail.com", "34343", TipoCliente.PESSOAFISICA);
+		cli1.getTelefones().addAll(Arrays.asList("55999947144", "55353351442"));
+		
+		Endereco e1 = new Endereco(null, "Rua flores", "300", "Apto 303", "Jardim", "89464", cli1, c1);
+		Endereco e2 = new Endereco(null, "Avenida Matos", "300", "Apto 303", "Jardim", "89464", cli1, c2);
+		
+		cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
+		
+		clienteRepository.saveAll(Arrays.asList(cli1));
+		enderecoRepository.saveAll(Arrays.asList(e1,e2));
 		
 	}
 	
