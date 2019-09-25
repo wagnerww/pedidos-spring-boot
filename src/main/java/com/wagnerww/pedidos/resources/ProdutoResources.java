@@ -1,5 +1,6 @@
 package com.wagnerww.pedidos.resources;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import com.wagnerww.pedidos.domain.Categoria;
 import com.wagnerww.pedidos.domain.Produto;
 import com.wagnerww.pedidos.dto.CategoriaDTO;
 import com.wagnerww.pedidos.dto.ProdutoDTO;
+import com.wagnerww.pedidos.resources.utils.URL;
 import com.wagnerww.pedidos.services.ProdutoService;
 
 import javassist.tools.rmi.ObjectNotFoundException;
@@ -36,15 +38,18 @@ public class ProdutoResources {
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<Page<ProdutoDTO>> findPage(
-			@RequestParam(value="nome", defaultValue = "") Integer nome,
-			@RequestParam(value="categorias", defaultValue = "") Integer categorias,
+			@RequestParam(value="nome", defaultValue = "") String nome,
+			@RequestParam(value="categorias", defaultValue = "") String categorias,
 			@RequestParam(value="page", defaultValue = "0") Integer page, 
 			@RequestParam(value="linesPerPage", defaultValue = "24")Integer linesPerPage, 
 			@RequestParam(value="orderBy", defaultValue = "nome")String orderBy, 
 			@RequestParam(value="direction", defaultValue = "ASC")String direction)  {
 		
-		Page<Produto> list = service.search(nome, ids, page, linesPerPage, orderBy, direction);
-		Page<CategoriaDTO> listDto = list.map(obj -> new CategoriaDTO(obj));
+		
+		String nomeDecoded = URL.decodeParam(nome);
+		List<Integer> ids = URL.decodeIntList(categorias);
+		Page<Produto> list = service.search(nomeDecoded, ids, page, linesPerPage, orderBy, direction);
+		Page<ProdutoDTO> listDto = list.map(obj -> new ProdutoDTO(obj));
 		
 		return ResponseEntity.ok().body(listDto);
 	}

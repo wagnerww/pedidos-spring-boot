@@ -2,16 +2,24 @@ package com.wagnerww.pedidos.dto;
 
 import java.io.Serializable;
 
+import com.wagnerww.pedidos.domain.Produto;
+
 public class ProdutoDTO implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	private Integer id;
-	private String Nome;
+	private String nome;
 	private Double preco;
 	
 	public ProdutoDTO() {
 		
 	}
+	
+	public ProdutoDTO(Produto obj) {
+		id = obj.getId();
+		nome = obj.getNome();
+		preco = obj.getPreco();
+	}	
 
 	public Integer getId() {
 		return id;
@@ -22,11 +30,11 @@ public class ProdutoDTO implements Serializable {
 	}
 
 	public String getNome() {
-		return Nome;
+		return nome;
 	}
 
 	public void setNome(String nome) {
-		Nome = nome;
+		this.nome = nome;
 	}
 
 	public Double getPreco() {
