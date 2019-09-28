@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import com.wagnerww.pedidos.services.DBService;
-
-import net.bytebuddy.dynamic.loading.ClassReloadingStrategy.Strategy;
+import com.wagnerww.pedidos.services.EmailService;
+import com.wagnerww.pedidos.services.SmtpEmailService;
 
 @Configuration
 @Profile("dev")
@@ -33,5 +33,10 @@ public class DevConfig {
 		
 		dbService.instantiateTestDatabase();
 		return true;
+	}
+	
+	@Bean
+	public EmailService emailService() {
+		return new SmtpEmailService();
 	}
 }
