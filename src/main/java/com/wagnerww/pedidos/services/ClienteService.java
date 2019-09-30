@@ -13,20 +13,18 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.wagnerww.pedidos.domain.Categoria;
 import com.wagnerww.pedidos.domain.Cidade;
 import com.wagnerww.pedidos.domain.Cliente;
 import com.wagnerww.pedidos.domain.Endereco;
+import com.wagnerww.pedidos.domain.enums.Perfil;
 import com.wagnerww.pedidos.domain.enums.TipoCliente;
-import com.wagnerww.pedidos.domain.Cliente;
 import com.wagnerww.pedidos.dto.ClienteDTO;
 import com.wagnerww.pedidos.dto.ClienteNewDTO;
-import com.wagnerww.pedidos.repositories.CidadeRepository;
 import com.wagnerww.pedidos.repositories.ClienteRepository;
 import com.wagnerww.pedidos.repositories.EnderecoRepository;
+import com.wagnerww.pedidos.security.UserSS;
+import com.wagnerww.pedidos.services.exceptions.AuthorizationException;
 import com.wagnerww.pedidos.services.exceptions.DataIntegrityException;
-
-import javassist.tools.rmi.ObjectNotFoundException;
 
 
 
@@ -44,6 +42,12 @@ public class ClienteService {
 	
 	
 	public Cliente buscar(Integer id){
+		
+		UserSS user = UserService.authenticated();
+		if(user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+			 throw new AuthorizationException("Acesso negado");
+		}
+		
 		Optional<Cliente> obj = repo.findById(id);
 		//if(obj == null) {
 			return obj.orElseThrow(() ->  new com.wagnerww.pedidos.services.exceptions.ObjectNotFoundException("Objeto não encontrado! Id:"+id
